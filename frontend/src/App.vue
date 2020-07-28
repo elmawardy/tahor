@@ -10,16 +10,16 @@
         </b-navbar-item>
       </template>
       <template slot="start">
-        <b-navbar-item href="/">Home</b-navbar-item>
+        <b-navbar-item href="/">الصفحة الرئيسية</b-navbar-item>
       </template>
 
       <template slot="end">
         <b-navbar-item tag="div">
           <div class="buttons">
-            <a class="button is-primary">
-              <strong>Sign up</strong>
+            <a @click="OpenLoginForm('register')" class="button is-primary">
+              <strong>إنشاء حساب</strong>
             </a>
-            <a class="button is-light">Log in</a>
+            <a @click="OpenLoginForm('login')" class="button is-light">تسجيل الدخول</a>
           </div>
         </b-navbar-item>
       </template>
@@ -40,6 +40,24 @@
     </footer>
   </div>
 </template>
+
+<script>
+import LoginPage from "@/components/LoginPage.vue";
+export default {
+  methods: {
+    OpenLoginForm(login_or_register) {
+      this.$buefy.modal.open({
+        parent: this,
+        component: LoginPage,
+        hasModalCard: true,
+        customClass: "custom-class custom-class-2",
+        trapFocus: true,
+        props: { login_or_register }
+      });
+    }
+  }
+};
+</script>
 
 <style lang="scss">
 @import "~bulma/sass/utilities/_all";

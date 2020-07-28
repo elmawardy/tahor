@@ -17,24 +17,26 @@
             </figure>
           </div>
           <div class="media-content">
-            <p class="title is-4">Resala</p>
-            <p class="subtitle is-6">@resalacharity</p>
+            <p class="title is-4">{{org_name}}</p>
+            <!-- <p class="subtitle is-6">@resalacharity</p> -->
           </div>
         </div>
 
         <div class="content">
           <progress
-            class="progress is-medium is-primary show-value"
+            class="progress is-small is-primary show-value"
+            style="margin-bottom:5px;"
             value="20"
             max="100"
-            text="21,500 / 100,000 EGP"
+            :text="'20 %'"
           ></progress>
-          <p>عم فتحي محتاج علاج لمضر السكر</p>
-          <a>@bulmaio</a>.
-          <a href="#">#css</a>
-          <a href="#">#responsive</a>
+          <div style="text-align:center">
+            <p style="font-size:12px">{{`${collectedFormatted} / ${targetFormatted}`}}</p>
+          </div>
+          <p>{{comment}}</p>
+          <a style="margin:2px;" v-for="(tag,index) in tags" :key="index">#{{tag}}</a>
           <br />
-          <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+          <time datetime="2016-1-1">{{updated_time}}</time>
           <div class="is-divider" data-content="شارك"></div>
           <div dir="rtl">
             <div class="buttons" style="text-align:end">
@@ -48,7 +50,7 @@
                   <strong>تبرع</strong>
                 </span>
               </button>
-              <a href="/case/1" class="button">
+              <a :href="`/case/${case_id}`" class="button">
                 <span>قرائة المزيد</span>
                 <div style="padding-right:7px;">
                   <span class="icon">
@@ -77,6 +79,41 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: [
+    "org_name",
+    "collected",
+    "target",
+    "currency",
+    "comment",
+    "tags",
+    "updated_time",
+    "case_id"
+  ],
+  computed: {
+    collectedFormatted: function() {
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: this.currency,
+        minimumFractionDigits: 2
+      });
+
+      return formatter.format(this.collected);
+    },
+    targetFormatted: function() {
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: this.currency,
+        minimumFractionDigits: 2
+      });
+
+      return formatter.format(this.target);
+    }
+  }
+};
+</script>
 
 <style scoped>
 progress.show-value {

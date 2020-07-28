@@ -30,16 +30,21 @@
         </section>
       </div>
     </div>
-    <div class="columns">
-      <div :key="index" v-for="(item,index) in [1,2,3]" class="column is-one-third">
-        <CaseCard></CaseCard>
+    <div class="columns is-multiline">
+      <div :key="index" v-for="(icase,index) in cases" class="column is-one-third">
+        <CaseCard
+          :org_name="icase.OrgName"
+          :collected="icase.Collected"
+          :target="icase.Target"
+          :currency="icase.Currency"
+          :comment="icase.Comment"
+          :tags="icase.Tags"
+          :updated_time="icase.DateModified"
+          :case_id="icase.ID"
+        ></CaseCard>
       </div>
     </div>
-    <div class="columns">
-      <div :key="index" v-for="(item,index) in [1,2,3]" class="column is-one-third">
-        <CaseCard></CaseCard>
-      </div>
-    </div>
+
     <div class="has-text-centered" style="margin-top:30px;">
       <button class="button is-primary">مشاهدة المزيد</button>
     </div>
@@ -74,6 +79,7 @@
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import CaseCard from "@/components/CaseCard.vue";
 import Accomplishment from "@/components/Accomplishment.vue";
+
 export default {
   name: "Home",
   components: {
@@ -82,7 +88,18 @@ export default {
     Accomplishment
   },
   data() {
-    return {};
+    return {
+      cases: []
+    };
+  },
+  mounted() {
+    fetch(this.$store.state.backendURL + "/api/case/select")
+      .then(response => response.json())
+      .then(response => {
+        if (response.State == "Success") {
+          this.cases = response.Cases;
+        }
+      });
   }
 };
 </script>
