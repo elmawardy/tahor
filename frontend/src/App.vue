@@ -13,7 +13,7 @@
         <b-navbar-item href="/">الصفحة الرئيسية</b-navbar-item>
       </template>
 
-      <template slot="end">
+      <template slot="end" v-if="!$store.state.loggedIn">
         <b-navbar-item tag="div">
           <div class="buttons">
             <a @click="OpenLoginForm('register')" class="button is-primary">
@@ -22,6 +22,18 @@
             <a @click="OpenLoginForm('login')" class="button is-light">تسجيل الدخول</a>
           </div>
         </b-navbar-item>
+      </template>
+      <template slot="end" v-else>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">مرحبا {{$store.state.user_name}}</a>
+
+          <div class="navbar-dropdown">
+            <a class="navbar-item">الملف الشخصي</a>
+            <a class="navbar-item">الحالات المحفوظة</a>
+            <hr class="navbar-divider" />
+            <a class="navbar-item" @click="Logout">تسجيل خروج</a>
+          </div>
+        </div>
       </template>
     </b-navbar>
     <router-view style="margin-bottom:100px;" />
@@ -43,8 +55,40 @@
 
 <script>
 import LoginPage from "@/components/LoginPage.vue";
+import { ToastProgrammatic as Toast } from "buefy";
 export default {
+  mounted() {
+    if (window.localStorage.getItem("jwt") != null) {
+      this.$store.commit(
+        "setUsername",
+        window.localStorage.getItem("user_name")
+      );
+      this.$store.commit("login");
+    }
+  },
   methods: {
+    Logout() {
+      fetch(this.$store.state.backendURL + "/api/user/logout", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+          jwt: window.localStorage.getItem("jwt")
+        })
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.State == "Success") {
+            window.localStorage.removeItem("jwt");
+            window.localStorage.removeItem("user_name");
+            this.$store.commit("logout");
+            this.$store.commit("setUsername", "");
+            Toast.open("تم تسجيل الخروج");
+          }
+        });
+    },
     OpenLoginForm(login_or_register) {
       this.$buefy.modal.open({
         parent: this,

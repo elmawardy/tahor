@@ -74,7 +74,7 @@
           text="21,500 / 100,000 EGP"
         ></progress>
         <div class="buttons">
-          <button class="button is-warning" data-tooltip="نشر">
+          <button class="button is-warning" data-tooltip="تصعيد">
             <span class="icon has-text-info">
               <i class="fas fa-arrow-up"></i>
             </span>

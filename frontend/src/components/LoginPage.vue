@@ -18,43 +18,23 @@
           </div>
         </div>
       </header>
-      <div v-if="selectedTab == 'login'">
-        <section class="modal-card-body">
-          <b-field label="Email">
-            <b-input type="email" v-model="email" placeholder="Your email" required></b-input>
-          </b-field>
-
-          <b-field label="Password">
-            <b-input
-              type="password"
-              v-model="password"
-              password-reveal
-              placeholder="Your password"
-              required
-            ></b-input>
-          </b-field>
-
-          <b-checkbox>Remember me</b-checkbox>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button" type="button" @click="$parent.close()">Close</button>
-          <button class="button is-primary">Login</button>
-        </footer>
-      </div>
-      <div v-else>
+      <div
+        :style="{visibility: selectedTab == 'register' ? 'visible' : 'hidden'}"
+        v-if="selectedTab == 'register'"
+      >
         <section class="modal-card-body">
           <b-field label="Name">
             <b-input type="text" v-model="name" placeholder="Your Name" required></b-input>
           </b-field>
 
           <b-field label="Email">
-            <b-input type="email" v-model="email" placeholder="Your email" required></b-input>
+            <b-input type="email" v-model="registerEmail" placeholder="Your email" required></b-input>
           </b-field>
 
           <b-field label="Password">
             <b-input
               type="password"
-              v-model="password"
+              v-model="registerpassword"
               password-reveal
               placeholder="Your password"
               required
@@ -79,6 +59,32 @@
           >تسجيل</button>
         </footer>
       </div>
+      <div v-if="selectedTab == 'login'">
+        <section class="modal-card-body">
+          <b-field label="Email">
+            <b-input type="email" v-model="email" placeholder="Your email" required></b-input>
+          </b-field>
+
+          <b-field label="Password">
+            <b-input
+              type="password"
+              v-model="password"
+              password-reveal
+              placeholder="Your password"
+              required
+            ></b-input>
+          </b-field>
+
+          <b-checkbox>Remember me</b-checkbox>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" type="button" @click="$parent.close()">Close</button>
+          <button
+            @click="login"
+            :class="`button is-primary ${loadingLogin ? 'is-loading':''}`"
+          >Login</button>
+        </footer>
+      </div>
     </div>
   </div>
 </template>
@@ -90,9 +96,12 @@ export default {
   data() {
     return {
       loadingRegister: false,
+      loadingLogin: false,
       name: "",
       email: "",
+      registerEmail: "",
       password: "",
+      registerpassword: "",
       passwordretype: "",
       selectedTab: ""
     };
@@ -101,6 +110,53 @@ export default {
     this.selectedTab = this.login_or_register;
   },
   methods: {
+    login() {
+      this.loadingLogin = true;
+      fetch(this.$store.state.backendURL + "/api/user/login", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+          email: this.email,
+          password: this.password
+        })
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.State == "Success") {
+            window.localStorage.setItem("jwt", response.jwt);
+            fetch(this.$store.state.backendURL + "/api/user/getbasicinfo", {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify({
+                jwt: window.localStorage.getItem("jwt")
+              })
+            })
+              .then(response => response.json())
+              .then(response => {
+                if (response.State == "Success") {
+                  window.localStorage.setItem(
+                    "user_name",
+                    response.user_info.Name
+                  );
+                  this.loadingLogin = false;
+                  Toast.open("مرحبا");
+                  this.$store.commit("login");
+                  this.$store.commit("setUsername", response.user_info.Name);
+                  this.$parent.close();
+                }
+              });
+          } else {
+            this.loadingLogin = false;
+            Toast.open("خطأ");
+          }
+        });
+    },
     register() {
       this.loadingRegister = true;
       var that = this;
@@ -112,9 +168,9 @@ export default {
         },
         method: "POST",
         body: JSON.stringify({
-          email: this.email,
+          email: this.registerEmail,
           name: this.name,
-          password: this.password
+          password: this.registerpassword
         })
       })
         .then(response => response.json())

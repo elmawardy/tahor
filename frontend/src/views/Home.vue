@@ -41,6 +41,9 @@
           :tags="icase.Tags"
           :updated_time="icase.DateModified"
           :case_id="icase.ID"
+          :votes="20"
+          :isVotedUp="false"
+          :donorsNumber="223"
         ></CaseCard>
       </div>
     </div>

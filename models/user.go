@@ -18,6 +18,40 @@ type User struct {
 	Password string
 }
 
+type UserBasicInfo struct {
+	Name  string
+	Email string
+}
+
+func UserGetBasicInfo(jwt string) (info UserBasicInfo, err error) {
+	u := User{}
+	claims, err := ParseToken(jwt)
+	if claims == nil {
+		// log.Println(err)
+		fmt.Println(`{"Status":"Error","Msg":"Unauthorized"}`)
+		return
+	}
+	email := fmt.Sprintf("%v", claims["email"])
+	global.DB.Where("email = ?", email).Find(&u)
+	info.Email = u.Email
+	info.Name = u.Name
+
+	return
+}
+
+func UserLogout(tokenString string) error {
+	claims, err := ParseToken(tokenString)
+	if claims == nil {
+		// log.Println(err)
+		fmt.Println(`{"Status":"Error","Msg":"Unauthorized"}`)
+		return errors.New("No Claims found in the token")
+	}
+	email := fmt.Sprintf("%v", claims["email"])
+	err = global.Cachestore.Del("user:" + email).Err()
+
+	return err
+}
+
 func (u *User) Login() (tokenString string, err error) {
 
 	plainTextPasswd := u.Password
@@ -73,4 +107,27 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func ParseToken(userToken string) (jwt.MapClaims, error) {
+	// Parse takes the token string and a function for looking up the key. The latter is especially
+	// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
+	// head of the token to identify which key to use, but the parsed token (head and claims) is provided
+	// to the callback, providing flexibility.
+
+	token, err := jwt.Parse(userToken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte("my-token-key"), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return claims, err
+	}
 }

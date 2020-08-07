@@ -18,7 +18,9 @@
           </div>
           <div class="media-content">
             <p class="title is-4">{{org_name}}</p>
-            <!-- <p class="subtitle is-6">@resalacharity</p> -->
+            <p class="subtitle is-6">
+              <time datetime="2016-1-1" style="font-size:13px;">{{updatedTime}}</time>
+            </p>
           </div>
         </div>
 
@@ -31,12 +33,17 @@
             :text="'20 %'"
           ></progress>
           <div style="text-align:center">
-            <p style="font-size:12px">{{`${collectedFormatted} / ${targetFormatted}`}}</p>
+            <p
+              style="font-size:12px;margin-bottom:0px;"
+            >{{`${collectedFormatted} / ${targetFormatted}`}}</p>
+            <p style="margin:0px;font-size:13px;">
+              <strong>{{donorsNumber}}</strong>
+              <span style="font-size:12px;">&nbsp;عدد المتبرعين</span>
+            </p>
           </div>
           <p>{{comment}}</p>
           <a style="margin:2px;" v-for="(tag,index) in tags" :key="index">#{{tag}}</a>
           <br />
-          <time datetime="2016-1-1">{{updated_time}}</time>
           <div class="is-divider" data-content="شارك"></div>
           <div dir="rtl">
             <div class="buttons" style="text-align:end">
@@ -50,9 +57,8 @@
                   <strong>تبرع</strong>
                 </span>
               </button>
-              <a :href="`/case/${case_id}`" class="button">
-                <span>قرائة المزيد</span>
-                <div style="padding-right:7px;">
+              <a :href="`/case/${case_id}`" class="button" data-tooltip="قرائة المزيد">
+                <div>
                   <span class="icon">
                     <i class="fas fa-info"></i>
                   </span>
@@ -72,6 +78,19 @@
                   </span>
                 </button>
               </div>
+              <div style="margin-left:5px;">
+                <button class="button" data-tooltip="تبليغ عن اسائة">
+                  <span class="icon">
+                    <i class="fas fa-flag"></i>
+                  </span>
+                </button>
+              </div>
+              <button :class="`button ${isVotedUp? 'is-warning' : ''}`" data-tooltip="تصعيد">
+                <span>{{votes}}</span>
+                <span class="icon has-text-info" style="margin:1px;">
+                  <i class="fas fa-arrow-up"></i>
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -90,7 +109,10 @@ export default {
     "comment",
     "tags",
     "updated_time",
-    "case_id"
+    "case_id",
+    "votes",
+    "isVotedUp",
+    "donorsNumber"
   ],
   computed: {
     collectedFormatted: function() {
@@ -110,6 +132,31 @@ export default {
       });
 
       return formatter.format(this.target);
+    },
+    updatedTime: function() {
+      return this.formatDate(this.updated_time);
+    }
+  },
+  methods: {
+    formatDate(date) {
+      date = new Date(date);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? "pm" : "am";
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      var strTime = hours + ":" + minutes + " " + ampm;
+      return (
+        date.getMonth() +
+        1 +
+        "/" +
+        date.getDate() +
+        "/" +
+        date.getFullYear() +
+        "  " +
+        strTime
+      );
     }
   }
 };

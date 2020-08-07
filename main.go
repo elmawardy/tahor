@@ -43,6 +43,8 @@ func main() {
 
 	r.POST("/api/user/register", handlers.UserRegisterHandler())
 	r.POST("/api/user/login", handlers.UserLoginHandler())
+	r.POST("/api/user/getbasicinfo", handlers.UserGetBasicInfoHandler())
+	r.POST("/api/user/logout", handlers.UserLogoutHandler())
 
 	r.Run(":8000")
 }
