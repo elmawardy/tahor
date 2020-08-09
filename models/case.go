@@ -13,6 +13,7 @@ type Case struct {
 	Target         uint
 	Currency       string
 	OrganizationID uint
+	Votes          []User `gorm:"many2many:case_votes;"`
 	Tags           []Tag
 }
 

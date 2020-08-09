@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/elmawardy/tahor/global"
@@ -21,6 +22,35 @@ type User struct {
 type UserBasicInfo struct {
 	Name  string
 	Email string
+}
+
+// func UserIDByJwt(jwt string) (u User, err error) {
+
+// 	err = global.DB.First(&u).Where("email = ?", email).Error
+// 	if err != nil {
+// 		return u, err
+// 	}
+// 	return u, err
+// }
+
+func (u *User) InjectIdByJwt(jwt string) error {
+	realJWT, err := global.Cachestore.HGet("user:"+u.Email, "jwt").Result()
+	if err == redis.Nil {
+		return errors.New("jwt not found")
+	} else if err != nil {
+		return err
+	}
+
+	if realJWT == jwt {
+		id, err := global.Cachestore.HGet("user:"+u.Email, "id").Result()
+		intID, _ := strconv.Atoi(id)
+		u.ID = uint(intID)
+
+		return err
+	}
+
+	return errors.New("jwt not the same")
+
 }
 
 func UserGetBasicInfo(jwt string) (info UserBasicInfo, err error) {
@@ -68,11 +98,16 @@ func (u *User) Login() (tokenString string, err error) {
 				return "", errors.New("Error generating jwt")
 			}
 
-			err = global.Cachestore.HSet("user:"+u.Email, "jwt", tokenString).Err()
+			userData := map[string]interface{}{
+				"jwt": tokenString,
+				"id":  u.ID,
+			}
+			err = global.Cachestore.HMSet("user:"+u.Email, userData).Err()
 			if err != nil {
 				fmt.Println(err)
 				return "", err
 			}
+
 		} else if err != nil {
 			fmt.Println(err)
 			return "", err

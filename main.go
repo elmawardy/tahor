@@ -40,6 +40,7 @@ func main() {
 
 	r.POST("/api/case/insert", handlers.CaseInsertHandler())
 	r.GET("/api/case/select", handlers.CaseSelectHandler())
+	r.POST("/api/case/vote", handlers.VoteUpHandler())
 
 	r.POST("/api/user/register", handlers.UserRegisterHandler())
 	r.POST("/api/user/login", handlers.UserLoginHandler())
