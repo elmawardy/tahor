@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
   redis:
     image: "redis:6.0.6"
@@ -6,20 +6,37 @@ services:
     build:
       context: .
       dockerfile: postgresql.dockerfile
-  web-backend:
+
+  # web-backend:
+  #   build: 
+  #     context: .
+  #     dockerfile: backend.dockerfile
+
+  #   depends_on: 
+  #     - redis
+  #     - postgres
+
+  #   ports:
+  #     - "8000:8000"
+
+    # tty: true
+
+  dev-web-backend:
     depends_on: 
       - postgres
       - redis
-    build: 
+    build:
       context: .
-      dockerfile: backend.dockerfile
-    
+      dockerfile: dev-backend.dockerfile
+  
     volumes:
-      # Update this to wherever you want VS Code to mount the folder of your project
-      - ..:/workspace:cached
+      - ../:/app
 
-      # Forwards the local Docker socket to the container.
-      - /var/run/docker.sock:/var/run/docker-host.sock 
+    working_dir: /app
   
     ports:
-      - "8000:8000"
+      - "8001:8000"
+
+volumes:
+  code-files:
+      external: false

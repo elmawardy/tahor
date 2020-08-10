@@ -30,6 +30,7 @@ type CaseResponse struct {
 }
 
 func (c *Case) Insert() error {
+
 	global.DB.Create(c)
 	global.DB.Save(c)
 	// global.DB.Model(c).Association("Tags").Append(c.Tags)
