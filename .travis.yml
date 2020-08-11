@@ -11,4 +11,4 @@ services:
 
 before_install:
     - find . -type f -not -iname '*/Docker/*' -exec cp '{}' '/Docker/{}' ';'
-    - cd Docker; docker-compose run --entrypoint="go test" test-web-backend
+    - cd Docker; docker-compose build; docker-compose run --entrypoint="go test" test-web-backend
