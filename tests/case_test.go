@@ -78,7 +78,6 @@ func TestInsertCase(t *testing.T) {
 			t.Fail()
 		}
 
-		fmt.Printf("Succeeded with response : %v\n", jsonData)
 		// restoreLists()
 
 	}
