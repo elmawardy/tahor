@@ -22,7 +22,7 @@ func CaseInsertHandler() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, map[string]string{
-			"State": "Success",
+			"State": "Fail",
 		})
 	}
 }
