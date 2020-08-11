@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.13.4
 RUN go get github.com/githubnemo/CompileDaemon
 
 COPY dev.sh /docker-entrypoint-initdb.d/dev.sh

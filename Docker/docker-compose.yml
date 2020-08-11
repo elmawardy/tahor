@@ -21,6 +21,15 @@ services:
 
     # tty: true
 
+  test-web-backend:
+    depends_on: 
+      - postgres
+      - redis
+    
+    build:
+      context: .
+      dockerfile: dev-backend.dockerfile
+
   dev-web-backend:
     depends_on: 
       - postgres
