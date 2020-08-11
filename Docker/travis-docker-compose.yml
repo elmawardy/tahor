@@ -14,4 +14,4 @@ services:
     
     build:
       context: .
-      dockerfile: dev-backend.dockerfile
+      dockerfile: test-backend.dockerfile

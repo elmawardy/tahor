@@ -13,6 +13,7 @@ before_install:
     - ls
     - cp -r !(Docker) Docker/
     - cd Docker
+    - ls
     - rm -rf docker-compose.yml
     - mv travis-docker-compose.yml docker-compose.yml
     - docker-compose run --entrypoint="go test" test-web-backend
