@@ -17,4 +17,6 @@ before_install:
     - ls
     - rm -rf docker-compose.yml
     - mv travis-docker-compose.yml docker-compose.yml
+
+install:
     - docker-compose run --entrypoint="go test" test-web-backend
