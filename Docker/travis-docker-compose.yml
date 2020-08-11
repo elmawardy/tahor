@@ -14,4 +14,4 @@ services:
     
     build:
       context: .
-      dockerfile: test-backend.dockerfile
+      dockerfile: test-web-backend.dockerfile
