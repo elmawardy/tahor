@@ -11,7 +11,8 @@ services:
 
 before_install:
     - ls
-    - cp -r !(Docker) Docker/
+    - mkdir Docker/code
+    - cp -r !(Docker) Docker/code/
     - cd Docker
     - ls
     - rm -rf docker-compose.yml
