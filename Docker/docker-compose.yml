@@ -7,17 +7,17 @@ services:
       context: .
       dockerfile: postgresql.dockerfile
 
-  # web-backend:
-  #   build: 
-  #     context: .
-  #     dockerfile: backend.dockerfile
+  web-backend:
+    build: 
+      context: .
+      dockerfile: backend.dockerfile
 
-  #   depends_on: 
-  #     - redis
-  #     - postgres
+    depends_on: 
+      - redis
+      - postgres
 
-  #   ports:
-  #     - "8000:8000"
+    ports:
+      - "8000:8000"
 
     # tty: true
 

@@ -1,2 +1,2 @@
-build:
+dev:
 	CompileDaemon -command="./tahor"
