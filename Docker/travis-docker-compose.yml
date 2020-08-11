@@ -12,6 +12,8 @@ services:
       - postgres
       - redis
     
+    working_dir: /code/tests
+    
     build:
       context: .
       dockerfile: test-web-backend.dockerfile
