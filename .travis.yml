@@ -10,5 +10,5 @@ services:
     - docker
 
 before_install:
-    - rsync -r --progress * /Docker --exclude Docker
+    - find . -type f -not -iname '*/Docker/*' -exec cp '{}' '/Docker/{}' ';'
     - cd Docker; docker-compose run --entrypoint="go test" test-web-backend
