@@ -12,4 +12,4 @@ services:
 before_install:
     - ls
     - cp -r !(Docker) Docker/
-    - cd Docker; docker-compose build; docker-compose run --entrypoint="go test" test-web-backend
+    - cd Docker; docker-compose -f travis-docker-compose.yml run --entrypoint="go test" test-web-backend
