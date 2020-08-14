@@ -1,4 +1,4 @@
 #!/bin/bash
 
-go build -o tahor
+cd app/
 CompileDaemon -command="./tahor"
