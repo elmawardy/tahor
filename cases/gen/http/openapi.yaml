@@ -1,0 +1,161 @@
+swagger: "2.0"
+info:
+  title: Cases
+  description: API to make CRUD operations for the cases
+  version: ""
+host: localhost:8088
+consumes:
+- application/json
+- application/xml
+- application/gob
+produces:
+- application/json
+- application/xml
+- application/gob
+paths:
+  /api/cases/add:
+    post:
+      tags:
+      - cases
+      summary: add cases
+      operationId: cases#add
+      parameters:
+      - name: AddRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CasesAddRequestBody'
+          required:
+          - desc
+          - target
+          - collected
+          - currency
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/CasesAddResponseBody'
+      schemes:
+      - http
+  /api/cases/get:
+    get:
+      tags:
+      - cases
+      summary: get cases
+      operationId: cases#get
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GetResponseResponse'
+      schemes:
+      - http
+definitions:
+  CasesAddRequestBody:
+    title: CasesAddRequestBody
+    type: object
+    properties:
+      collected:
+        type: number
+        description: Collected Quantity
+        example: 0.8098744009695131
+        format: double
+      currency:
+        type: string
+        description: Currency
+        example: Similique ut qui placeat dolores.
+      desc:
+        type: string
+        description: Case Description
+        example: Itaque non ipsum facilis sunt quam.
+      tags:
+        type: array
+        items:
+          type: string
+          example: Voluptatum molestiae cum et eligendi.
+        description: Tags array
+        example:
+        - Id quas.
+        - Facere et vel et enim.
+      target:
+        type: number
+        description: Target Quantity
+        example: 0.31413696727320983
+        format: double
+    example:
+      collected: 0.47071985632076707
+      currency: Aperiam qui provident qui.
+      desc: Voluptas a.
+      tags:
+      - Repellat porro voluptatibus odio ipsa officiis.
+      - Adipisci et labore cupiditate soluta modi.
+      target: 0.17198727809463923
+    required:
+    - desc
+    - target
+    - collected
+    - currency
+  CasesAddResponseBody:
+    title: CasesAddResponseBody
+    type: object
+    properties:
+      desc:
+        type: string
+        description: The description of the case
+        example: Provident blanditiis eum qui laudantium eum.
+    example:
+      desc: Vitae voluptate.
+  GetResponseResponse:
+    title: GetResponseResponse
+    type: object
+    properties:
+      Collected:
+        type: number
+        description: Collected value
+        example: 0.2501494114408457
+        format: double
+      Currency:
+        type: string
+        description: Currency
+        example: Nam voluptatem quis rerum sit quisquam vel.
+      DateModified:
+        type: string
+        description: Date Modified in the database
+        example: Voluptas saepe ut.
+      Description:
+        type: string
+        description: Case Description
+        example: Quia enim.
+      ID:
+        type: integer
+        description: Case ID
+        example: 10856614028323777450
+        format: int64
+      Tags:
+        type: array
+        items:
+          type: string
+          example: Ratione ipsa repellat officia.
+        description: Tags
+        example:
+        - Expedita autem at.
+        - Iste quasi quis earum.
+        - Enim voluptates in rerum.
+        - Maxime dolores optio ut.
+      Target:
+        type: number
+        description: Targetted value
+        example: 0.2706150952299439
+        format: double
+    example:
+      Collected: 0.5421761432364833
+      Currency: Neque debitis.
+      DateModified: Saepe nobis aut qui consequatur.
+      Description: Non numquam ea architecto laborum aut omnis.
+      ID: 16025356420810469767
+      Tags:
+      - Labore quia perspiciatis omnis.
+      - Illo id.
+      Target: 0.015134247437328498

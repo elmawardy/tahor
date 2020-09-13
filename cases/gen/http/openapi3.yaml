@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Cases
+  description: API to make CRUD operations for the cases
+  version: "1.0"
+servers:
+- url: http://localhost:8088
+paths:
+  /api/cases/add:
+    post:
+      tags:
+      - cases
+      summary: add cases
+      operationId: cases#add
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddRequestBody'
+            example:
+              collected: 0.8091384557987812
+              currency: Autem qui aperiam aut.
+              desc: Expedita accusamus totam tempore.
+              tags:
+              - Cupiditate qui quo veritatis est.
+              - Accusantium sed voluptas ut qui.
+              target: 0.5160925211499976
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddResponse'
+              example:
+                desc: Non ipsa accusantium facilis consectetur aut dolores.
+  /api/cases/get:
+    get:
+      tags:
+      - cases
+      summary: get cases
+      operationId: cases#get
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetResponse'
+                example:
+                - Collected: 0.3869581768381672
+                  Currency: Ut enim nam deserunt sit omnis sapiente.
+                  DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                  Description: Aut qui non iusto.
+                  ID: 4049203230264206593
+                  Tags:
+                  - Quo est occaecati ducimus omnis qui voluptates.
+                  - Et aut.
+                  - Accusantium qui.
+                  Target: 0.13596043899317112
+                - Collected: 0.3869581768381672
+                  Currency: Ut enim nam deserunt sit omnis sapiente.
+                  DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                  Description: Aut qui non iusto.
+                  ID: 4049203230264206593
+                  Tags:
+                  - Quo est occaecati ducimus omnis qui voluptates.
+                  - Et aut.
+                  - Accusantium qui.
+                  Target: 0.13596043899317112
+              example:
+              - Collected: 0.3869581768381672
+                Currency: Ut enim nam deserunt sit omnis sapiente.
+                DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                Description: Aut qui non iusto.
+                ID: 4049203230264206593
+                Tags:
+                - Quo est occaecati ducimus omnis qui voluptates.
+                - Et aut.
+                - Accusantium qui.
+                Target: 0.13596043899317112
+              - Collected: 0.3869581768381672
+                Currency: Ut enim nam deserunt sit omnis sapiente.
+                DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                Description: Aut qui non iusto.
+                ID: 4049203230264206593
+                Tags:
+                - Quo est occaecati ducimus omnis qui voluptates.
+                - Et aut.
+                - Accusantium qui.
+                Target: 0.13596043899317112
+              - Collected: 0.3869581768381672
+                Currency: Ut enim nam deserunt sit omnis sapiente.
+                DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                Description: Aut qui non iusto.
+                ID: 4049203230264206593
+                Tags:
+                - Quo est occaecati ducimus omnis qui voluptates.
+                - Et aut.
+                - Accusantium qui.
+                Target: 0.13596043899317112
+              - Collected: 0.3869581768381672
+                Currency: Ut enim nam deserunt sit omnis sapiente.
+                DateModified: Exercitationem architecto vel veritatis cupiditate cupiditate suscipit.
+                Description: Aut qui non iusto.
+                ID: 4049203230264206593
+                Tags:
+                - Quo est occaecati ducimus omnis qui voluptates.
+                - Et aut.
+                - Accusantium qui.
+                Target: 0.13596043899317112
+components:
+  schemas:
+    AddRequestBody:
+      type: object
+      properties:
+        collected:
+          type: number
+          description: Collected Quantity
+          example: 0.718368292147399
+          format: double
+        currency:
+          type: string
+          description: Currency
+          example: Tenetur adipisci qui veritatis doloribus.
+        desc:
+          type: string
+          description: Case Description
+          example: Quisquam enim eos eius.
+        tags:
+          type: array
+          items:
+            type: string
+            example: Maxime voluptas provident totam.
+          description: Tags array
+          example:
+          - Ut voluptatem omnis rerum nihil.
+          - Aperiam et nobis.
+        target:
+          type: number
+          description: Target Quantity
+          example: 0.5749425320579751
+          format: double
+      example:
+        collected: 0.3887387499244871
+        currency: Possimus et aliquid ut hic reiciendis sit.
+        desc: Qui dolores eaque sapiente tempora consequatur quia.
+        tags:
+        - Unde amet sequi accusantium ex doloribus.
+        - Non in eos et labore molestiae et.
+        - Rerum ut dignissimos sit.
+        - Et illum vel vero.
+        target: 0.20434664421836665
+      required:
+      - desc
+      - target
+      - collected
+      - currency
+    AddResponse:
+      type: object
+      properties:
+        desc:
+          type: string
+          description: The description of the case
+          example: Itaque numquam eaque dolore.
+      example:
+        desc: Ullam laboriosam quae rerum animi nobis non.
+    GetResponse:
+      type: object
+      properties:
+        Collected:
+          type: number
+          description: Collected value
+          example: 0.1830968478349031
+          format: double
+        Currency:
+          type: string
+          description: Currency
+          example: Consequatur porro et deserunt tenetur aut.
+        DateModified:
+          type: string
+          description: Date Modified in the database
+          example: Odio ratione.
+        Description:
+          type: string
+          description: Case Description
+          example: Esse debitis ut incidunt error quam provident.
+        ID:
+          type: integer
+          description: Case ID
+          example: 15039787010741926320
+        Tags:
+          type: array
+          items:
+            type: string
+            example: Porro ipsa aut incidunt magnam vel.
+          description: Tags
+          example:
+          - Porro velit.
+          - Ducimus quasi non ad a.
+          - Et accusamus in optio consequatur temporibus accusamus.
+        Target:
+          type: number
+          description: Targetted value
+          example: 0.09451381226237493
+          format: double
+      example:
+        Collected: 0.4174072138010751
+        Currency: Quas deserunt nulla ut deleniti ea.
+        DateModified: Ut voluptas consequuntur et quia reprehenderit a.
+        Description: Et assumenda ut quo est explicabo ratione.
+        ID: 3814296965382467875
+        Tags:
+        - Similique voluptatem qui fuga.
+        - Voluptatem id.
+        - Repellat id neque consequatur.
+        - Nemo pariatur dolore mollitia et rem et.
+        Target: 0.7945803488652747
