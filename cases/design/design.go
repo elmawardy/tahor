@@ -13,27 +13,34 @@ var _ = API("cases", func() {
 	})
 })
 
-// var Case = Type("Case", func() {
-// 	// Attribute describes an object field
-// 	Attribute("desc", String, "Case Description")
-// 	Attribute("target", Float64, "Target Quantity")
-// 	Attribute("collected", Float64, "Collected Quantity")
-// 	Attribute("currency", String, "Currency")
-// 	Attribute("tags", ArrayOf(String), "Tags array")
-
-// })
-
 var _ = Service("cases", func() {
 	Description("Cases service")
 
 	cors.Origin("*")
 
+	Error("unauthorized", String, "Credentials are invalid")
+
+	HTTP(func() {
+		Response("unauthorized", StatusUnauthorized)
+	})
+
 	Method("get", func() {
 		Result(ArrayOf(GetResponse))
+		Security(JWTAuth, func() { // Use JWT to auth requests to this endpoint.
+			Scope("api:read") // Enforce presence of "api:read" scope in JWT claims.
+		})
+		Payload(func() {
+			TokenField(1, "token", String, func() {
+				Description("JWT used for authentication")
+			})
+			Required("token")
+		})
 		HTTP(func() {
 			GET("/api/cases/get")
 			Response(StatusOK)
+			Response("invalid-scopes", StatusForbidden)
 		})
+		Error("invalid-scopes", String, "Token scopes are invalid")
 	})
 	Method("add", func() {
 		// Payload describes the method payload
@@ -76,36 +83,3 @@ var GetResponse = Type("GetResponse", func() {
 	Attribute("DateModified", String, "Date Modified in the database")
 	Attribute("Tags", ArrayOf(String), "Tags")
 })
-
-// var sg = StorageGroup("PostgreSQL", func() {
-// 	Description("This is the global storage group (relational)")
-// 	Store("mysql", gorma.MySQL, func() {
-// 		Description("This is the mysql relational store")
-// 		Model("Case", func() {
-// 			BuildsFrom()
-
-// 			RendersTo(Cases)						// a Media Type definition
-// 			Description("This is the case model")
-
-// 			Field("ID", gorma.Integer, func() {    // Required for CRUD getters to take a PK argument!
-// 				PrimaryKey()
-// 				Description("This is the ID PK field")
-// 			})
-
-// 			Field("Comment", gorma.String)
-// 			Field("Target", gorma.Float64)
-// 			Field("Collected", gorma.Float64)
-// 			Field("Tags", gorma.ArrayOf(String))
-
-// 			Field("CreatedAt", gorma.Timestamp)
-// 			Field("UpdatedAt", gorma.Timestamp)			 // Shown for demonstration
-// 			Field("DeletedAt", gorma.NullableTimestamp)  // These are added by default
-// 		})
-// 	})
-// }
-
-// var _ = Service("openapi", func() {
-// 	// Serve the file with relative path ../../gen/http/openapi.json for
-// 	// requests sent to /swagger.json.
-// 	Files("/swagger.json", "../../gen/http/openapi.json")
-// })

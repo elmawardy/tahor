@@ -69,6 +69,8 @@
 <script>
 import LoginPage from "@/components/LoginPage.vue";
 import { ToastProgrammatic as Toast } from "buefy";
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -126,26 +128,26 @@ export default {
       this.menuCollapsed = collapsed;
     },
     Logout() {
-      fetch(this.$store.state.backendURL + "/api/user/logout", {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify({
+
+       axios.post(this.$store.state.authURL + "/api/auth/signout", {
           jwt: window.localStorage.getItem("jwt")
+        },{
+          headers :{
+            "Content-Type": "application/json",
+          }
         })
-      })
-        .then(response => response.json())
         .then(response => {
-          if (response.State == "Success") {
+          if (response.data == "success") {
             window.localStorage.removeItem("jwt");
             window.localStorage.removeItem("user_name");
             this.$store.commit("logout");
             this.$store.commit("setUsername", "");
             Toast.open("تم تسجيل الخروج");
           }
-        });
+        })
+        .catch(e => {
+          console.log(e)
+        })
     },
     OpenLoginForm(login_or_register) {
       this.$buefy.modal.open({

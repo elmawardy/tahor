@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Authentication
+  description: API to authenticate users to be able to use the rest of services
+  version: "1.0"
+servers:
+- url: http://localhost:8089
+paths:
+  /api/auth/getbasicinfo:
+    post:
+      tags:
+      - auth
+      summary: getbasicinfo auth
+      description: Gets user basic info like display name
+      operationId: auth#getbasicinfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creds'
+            example:
+              jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBasicInfo'
+              example:
+                name: Sint esse distinctio.
+  /api/auth/register:
+    post:
+      tags:
+      - auth
+      summary: register auth
+      description: Registers user in the database
+      operationId: auth#register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequestBody'
+            example:
+              email: email.example.com
+              name: Ahmad Sayed
+              password: password
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Voluptas tenetur et.
+              example: Et voluptate.
+  /api/auth/signin:
+    post:
+      tags:
+      - auth
+      summary: signin auth
+      description: Creates a valid JWT
+      operationId: auth#signin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequestBody'
+            example:
+              email: email.example.com
+              password: password
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creds'
+              example:
+                jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+  /api/auth/signout:
+    post:
+      tags:
+      - auth
+      summary: signout auth
+      description: Signs user out from the system
+      operationId: auth#signout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creds'
+            example:
+              jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: string
+                example: A molestiae occaecati aspernatur et doloremque aut.
+              example: Asperiores ea pariatur itaque excepturi repellendus rerum.
+components:
+  schemas:
+    Creds:
+      type: object
+      properties:
+        jwt:
+          type: string
+          description: JWT token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+      example:
+        jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+      required:
+      - jwt
+    RegisterRequestBody:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email used to perform signin
+          example: email.example.com
+        name:
+          type: string
+          description: Display name of the user
+          example: Ahmad Sayed
+        password:
+          type: string
+          description: Password used to perform signin
+          example: password
+      description: Credentials used to authenticate to retrieve JWT token
+      example:
+        email: email.example.com
+        name: Ahmad Sayed
+        password: password
+      required:
+      - email
+      - password
+    SigninRequestBody:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email used to perform signin
+          example: email.example.com
+        password:
+          type: string
+          description: Password used to perform signin
+          example: password
+      description: Credentials used to authenticate to retrieve JWT token
+      example:
+        email: email.example.com
+        password: password
+      required:
+      - email
+      - password
+    UserBasicInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user display name
+          example: Voluptatem consequatur maiores at cupiditate doloribus.
+      example:
+        name: Non cum perspiciatis error quasi autem.

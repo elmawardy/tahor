@@ -96,7 +96,7 @@ export default {
     };
   },
   mounted() {
-    fetch(this.$store.state.backendURL + "/api/cases/get",{
+    fetch(this.$store.state.casesURL + "/api/cases/get",{
       mode: 'cors'
     })
     .then(response => response.json())

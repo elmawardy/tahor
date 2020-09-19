@@ -112,7 +112,7 @@ export default {
   methods: {
     login() {
       this.loadingLogin = true;
-      fetch(this.$store.state.backendURL + "/api/user/login", {
+      fetch(this.$store.state.authURL + "/api/auth/signin", {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
@@ -125,9 +125,8 @@ export default {
       })
         .then(response => response.json())
         .then(response => {
-          if (response.State == "Success") {
             window.localStorage.setItem("jwt", response.jwt);
-            fetch(this.$store.state.backendURL + "/api/user/getbasicinfo", {
+            fetch(this.$store.state.authURL + "/api/auth/getbasicinfo", {
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
@@ -139,29 +138,28 @@ export default {
             })
               .then(response => response.json())
               .then(response => {
-                if (response.State == "Success") {
                   window.localStorage.setItem(
                     "user_name",
-                    response.user_info.Name
+                    response.name
                   );
                   this.loadingLogin = false;
                   Toast.open("مرحبا");
                   this.$store.commit("login");
-                  this.$store.commit("setUsername", response.user_info.Name);
+                  this.$store.commit("setUsername", response.name);
                   this.$parent.close();
-                }
               });
-          } else {
+        })
+        .catch(err => {
             this.loadingLogin = false;
             Toast.open("خطأ");
-          }
+            console.log(err)
         });
     },
     register() {
       this.loadingRegister = true;
       var that = this;
 
-      fetch(this.$store.state.backendURL + "/api/user/register", {
+      fetch(this.$store.state.authURL + "/api/user/register", {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
