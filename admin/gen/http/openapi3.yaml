@@ -1,0 +1,97 @@
+openapi: 3.0.3
+info:
+  title: Admininstration app
+  description: API to administrate the project like making crud for cases
+  version: "1.0"
+servers:
+- url: http://localhost:8090
+paths:
+  /api/admin/cases/add:
+    post:
+      tags:
+      - admin
+      summary: addcase admin
+      operationId: admin#addcase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddcaseRequestBody'
+            example:
+              collected: 0.6763083345048223
+              currency: Possimus quidem aut cumque qui commodi.
+              desc: Iure repellendus.
+              tags:
+              - Soluta dolor ut.
+              - Molestiae non consectetur ut quam.
+              - Enim dolor culpa eum ullam.
+              - Vel ex vero.
+              target: 0.24574395491977002
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Vero sunt laboriosam.
+              example: Qui quasi tenetur ea fugiat molestiae.
+      security:
+      - jwt_header_Authorization:
+        - api:read
+        - api:write
+components:
+  schemas:
+    AddcaseRequestBody:
+      type: object
+      properties:
+        collected:
+          type: number
+          description: Collected Quantity
+          example: 0.9919302028990383
+          format: double
+        currency:
+          type: string
+          description: Currency
+          example: Maiores corporis eius possimus ratione alias.
+        desc:
+          type: string
+          description: Case Description
+          example: Sed libero sit excepturi aliquam.
+        tags:
+          type: array
+          items:
+            type: string
+            example: Voluptate in modi dolores tempore mollitia.
+          description: Tags array
+          example:
+          - Porro voluptatem inventore et iure et autem.
+          - Nulla numquam enim commodi neque quia nobis.
+          - Suscipit modi labore laudantium.
+          - Et perferendis voluptatem voluptatibus debitis sed explicabo.
+        target:
+          type: number
+          description: Target Quantity
+          example: 0.4679889966791162
+          format: double
+      example:
+        collected: 0.1171949486330611
+        currency: Qui fugit qui non.
+        desc: Illo quisquam voluptatem quaerat.
+        tags:
+        - Et sint in quas.
+        - Vel aperiam vitae dolor harum.
+        - Quisquam tempora dolorem accusamus dignissimos ad quis.
+        - Distinctio deserunt aut laboriosam totam.
+        target: 0.5257694955889389
+      required:
+      - desc
+      - target
+      - collected
+      - currency
+  securitySchemes:
+    jwt_header_Authorization:
+      type: http
+      description: Secures endpoint by requiring a valid JWT token retrieved via the signin endpoint. Supports scopes "api:read" and "api:write".
+      scheme: bearer

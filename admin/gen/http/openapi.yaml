@@ -1,0 +1,105 @@
+swagger: "2.0"
+info:
+  title: Admininstration app
+  description: API to administrate the project like making crud for cases
+  version: ""
+host: localhost:8090
+consumes:
+- application/json
+- application/xml
+- application/gob
+produces:
+- application/json
+- application/xml
+- application/gob
+paths:
+  /api/admin/cases/add:
+    post:
+      tags:
+      - admin
+      summary: addcase admin
+      operationId: admin#addcase
+      parameters:
+      - name: Authorization
+        in: header
+        description: JWT token used to perform authorization
+        required: false
+        type: string
+      - name: AddcaseRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/AdminAddcaseRequestBody'
+          required:
+          - desc
+          - target
+          - collected
+          - currency
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            type: string
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+definitions:
+  AdminAddcaseRequestBody:
+    title: AdminAddcaseRequestBody
+    type: object
+    properties:
+      collected:
+        type: number
+        description: Collected Quantity
+        example: 0.5135247135079504
+        format: double
+      currency:
+        type: string
+        description: Currency
+        example: Et aperiam et beatae qui sequi.
+      desc:
+        type: string
+        description: Case Description
+        example: Aperiam non neque quaerat.
+      tags:
+        type: array
+        items:
+          type: string
+          example: Modi optio minima velit aut minus dignissimos.
+        description: Tags array
+        example:
+        - Quisquam ullam id a itaque omnis dolor.
+        - Harum distinctio voluptatibus facere consequuntur possimus.
+        - Nobis ducimus repellat.
+        - Ea magnam ut doloremque suscipit molestias.
+      target:
+        type: number
+        description: Target Quantity
+        example: 0.1527055762429082
+        format: double
+    example:
+      collected: 0.8189890239170758
+      currency: Minima voluptatem.
+      desc: Tenetur perspiciatis.
+      tags:
+      - Accusantium et.
+      - Autem odio.
+      - Doloribus non.
+      target: 0.6587623836935882
+    required:
+    - desc
+    - target
+    - collected
+    - currency
+securityDefinitions:
+  jwt_header_Authorization:
+    type: apiKey
+    description: |-
+      Secures endpoint by requiring a valid JWT token retrieved via the signin endpoint. Supports scopes "api:read" and "api:write".
+
+      **Security Scopes**:
+        * `api:read`: Read-only access
+        * `api:write`: Read and write access
+    name: Authorization
+    in: header
