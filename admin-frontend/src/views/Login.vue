@@ -10,11 +10,11 @@
         </header>
         <div>
             <section class="modal-card-body">
-            <b-field label="Email">
+            <b-field label="Email" v-on:keyup.native.enter="login">
                 <b-input type="email" v-model="email" placeholder="Your email" required></b-input>
             </b-field>
 
-            <b-field label="Password">
+            <b-field label="Password" v-on:keyup.native.enter="login">
                 <b-input
                 type="password"
                 v-model="password"
@@ -91,9 +91,10 @@ export default {
                     response.name
                   );
                   this.loadingLogin = false;
-                  Toast.open("مرحبا");
+                  Toast.open("Welcome");
                   this.$store.commit("login");
                   this.$store.commit("setUsername", response.name);
+                  this.$router.push('/dashboard')
               });
         })
         .catch(err => {

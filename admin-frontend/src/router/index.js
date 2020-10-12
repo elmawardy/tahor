@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
+import Cases from '../views/Cases.vue'
+import Users from '../views/Users.vue'
+import UserAdd from '../views/UserAdd.vue'
 
 Vue.use(VueRouter)
 
@@ -14,6 +17,9 @@ const routes = [
     component: Home,
     children:[
       { path: '', alias:['dashboard'], component: Dashboard },
+      { path: 'users', component: Users },
+      { path: 'cases', component: Cases },
+      { path: 'users/add', component: UserAdd },
     ]
   },
   {

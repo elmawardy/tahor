@@ -16,13 +16,13 @@
 
         <template slot="end" v-if="$store.state.loggedIn">
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">مرحبا {{$store.state.user_name}}</a>
+            <a class="navbar-link">Welcome {{$store.state.user_name}}</a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item">الملف الشخصي</a>
-              <a class="navbar-item">الحالات المحفوظة</a>
+              <a class="navbar-item">Profile</a>
+              <a class="navbar-item">Saved Cases</a>
               <hr class="navbar-divider" />
-              <a class="navbar-item" @click="Logout">تسجيل خروج</a>
+              <a class="navbar-item">SignOut</a>
             </div>
           </div>
         </template>
@@ -60,25 +60,31 @@
 
 <script>
 
+import { ToastProgrammatic as Toast } from "buefy";
 export default {
   data() {
     return {
       menuCollapsed: false,
       menu: [
         {
-          href: "/",
-          title: "الصفحة الرئيسية",
+          href: "/dashboard",
+          title: "Dashboard",
           icon: "fa fa-home"
         },
         {
           href: "/cases",
-          title: "الحالات",
+          title: "Cases",
           icon: "fa fa-heartbeat"
         },
         {
           href: "/users",
-          title: "المستخدمين",
+          title: "Users",
           icon: "fa fa-users"
+        },
+        {
+          href: "/monitor",
+          title: "Monitor",
+          icon: "fa fa-binoculars"
         },
       ]
     };
@@ -87,7 +93,42 @@ export default {
      onToggleCollapse(collapsed) {
       this.menuCollapsed = collapsed;
     },
-  }
+  },
+  mounted() {
+
+        var jwt = window.localStorage.getItem('jwt')
+        var user_name = window.localStorage.getItem('user_name')
+
+        if ( (jwt != null && jwt != undefined) && (user_name == null && user_name == undefined ) ){
+          fetch(this.$store.state.authURL + "/api/auth/getbasicinfo", {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({
+              jwt: window.localStorage.getItem("jwt")
+            })
+          })
+            .then(response => response.json())
+            .then(response => {
+                window.localStorage.setItem(
+                  "user_name",
+                  response.name
+                );
+                this.loadingLogin = false;
+                Toast.open("Welcome");
+                this.$store.commit("login");
+                this.$store.commit("setUsername", response.name);
+            });
+        }else if (jwt != null && jwt != undefined){
+            window.localStorage.setItem("jwt", jwt);
+            this.$store.commit("login");
+            this.$store.commit("setUsername", user_name);
+        }else{
+            this.$router.push('/login')
+        }
+  },
 };
 </script>
 
