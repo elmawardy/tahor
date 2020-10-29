@@ -1,10 +1,12 @@
 <template>
     <div style="padding:10px;min-height:100vh">
         <p class="title">Cases Manager</p>
-        <b-button 
-            icon-left="plus">
-            New Case
-        </b-button>
+        <router-link to="/cases/add">
+            <b-button 
+                icon-left="plus">
+                Add Case
+            </b-button>
+        </router-link>
         <b-input placeholder="Search..."
             type="search"
             icon="magnify"

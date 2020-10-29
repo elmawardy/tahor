@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     authURL:'http://localhost:8089',
+    caseURL:'http://localhost:8088',
     loggedIn: false,
     user_name: ""
   },

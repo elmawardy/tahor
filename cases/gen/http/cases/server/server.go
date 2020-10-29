@@ -109,15 +109,22 @@ func NewGetHandler(
 	formatter func(err error) goahttp.Statuser,
 ) http.Handler {
 	var (
+		decodeRequest  = DecodeGetRequest(mux, decoder)
 		encodeResponse = EncodeGetResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+		encodeError    = EncodeGetError(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "get")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "cases")
-		var err error
-		res, err := endpoint(ctx, nil)
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
 		if err != nil {
 			if err := encodeError(ctx, w, err); err != nil {
 				errhandler(ctx, w, err)
@@ -155,7 +162,7 @@ func NewAddHandler(
 	var (
 		decodeRequest  = DecodeAddRequest(mux, decoder)
 		encodeResponse = EncodeAddResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+		encodeError    = EncodeAddError(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -218,6 +225,7 @@ func handleCasesOrigin(h http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Credentials", "false")
 			if acrm := r.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
+				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			}
 			origHndlr(w, r)
 			return

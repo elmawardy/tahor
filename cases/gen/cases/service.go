@@ -14,7 +14,7 @@ import (
 // Cases service
 type Service interface {
 	// Get implements get.
-	Get(context.Context) (res []*GetResponse, err error)
+	Get(context.Context, *GetPayload) (res []*GetResponse, err error)
 	// Add implements add.
 	Add(context.Context, *AddPayload) (res *AddResponse, err error)
 }
@@ -28,6 +28,12 @@ const ServiceName = "cases"
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
 var MethodNames = [2]string{"get", "add"}
+
+// GetPayload is the payload type of the cases service get method.
+type GetPayload struct {
+	// JWT used for authentication
+	Token string
+}
 
 // AddPayload is the payload type of the cases service add method.
 type AddPayload struct {
@@ -64,4 +70,30 @@ type GetResponse struct {
 	DateModified *string
 	// Tags
 	Tags []string
+}
+
+// Credentials are invalid
+type Unauthorized string
+
+// Token scopes are invalid
+type InvalidScopes string
+
+// Error returns an error description.
+func (e Unauthorized) Error() string {
+	return "Credentials are invalid"
+}
+
+// ErrorName returns "unauthorized".
+func (e Unauthorized) ErrorName() string {
+	return "unauthorized"
+}
+
+// Error returns an error description.
+func (e InvalidScopes) Error() string {
+	return "Token scopes are invalid"
+}
+
+// ErrorName returns "invalid-scopes".
+func (e InvalidScopes) ErrorName() string {
+	return "invalid-scopes"
 }

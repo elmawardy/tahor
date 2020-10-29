@@ -16,7 +16,9 @@ var _ = API("cases", func() {
 var _ = Service("cases", func() {
 	Description("Cases service")
 
-	cors.Origin("*")
+	cors.Origin("*", func() {
+		cors.Headers("Content-Type")
+	})
 
 	Error("unauthorized", String, "Credentials are invalid")
 
@@ -26,11 +28,9 @@ var _ = Service("cases", func() {
 
 	Method("get", func() {
 		Result(ArrayOf(GetResponse))
-		Security(JWTAuth, func() { // Use JWT to auth requests to this endpoint.
-			Scope("api:read") // Enforce presence of "api:read" scope in JWT claims.
-		})
+
 		Payload(func() {
-			TokenField(1, "token", String, func() {
+			Field(1, "token", String, func() {
 				Description("JWT used for authentication")
 			})
 			Required("token")
@@ -68,6 +68,12 @@ var _ = Service("cases", func() {
 		})
 
 	})
+})
+
+var JWTAuth = JWTSecurity("jwt", func() {
+	Description(`Secures endpoint by requiring a valid JWT token retrieved via the signin endpoint. Supports scopes "api:read" and "api:write".`)
+	Scope("api:read", "Read-only access")
+	Scope("api:write", "Read and write access")
 })
 
 var AddResponse = Type("AddResponse", func() {

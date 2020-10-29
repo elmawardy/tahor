@@ -44,7 +44,7 @@ func (s *casessrvc) Add(ctx context.Context, p *cases.AddPayload) (res *cases.Ad
 	return
 }
 
-func (s *casessrvc) Get(context.Context) (res []*cases.GetResponse, err error) {
+func (s *casessrvc) Get(ctx context.Context, p *cases.GetPayload) (res []*cases.GetResponse, err error) {
 
 	dbcases, err := models.SelectCases(0, 6)
 

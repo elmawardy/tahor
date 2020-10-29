@@ -29,7 +29,9 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` cases get` + "\n" +
+	return os.Args[0] + ` cases get --body '{
+      "token": "Est esse id."
+   }'` + "\n" +
 		""
 }
 
@@ -45,7 +47,8 @@ func ParseEndpoint(
 	var (
 		casesFlags = flag.NewFlagSet("cases", flag.ContinueOnError)
 
-		casesGetFlags = flag.NewFlagSet("get", flag.ExitOnError)
+		casesGetFlags    = flag.NewFlagSet("get", flag.ExitOnError)
+		casesGetBodyFlag = casesGetFlags.String("body", "REQUIRED", "")
 
 		casesAddFlags    = flag.NewFlagSet("add", flag.ExitOnError)
 		casesAddBodyFlag = casesAddFlags.String("body", "REQUIRED", "")
@@ -121,7 +124,7 @@ func ParseEndpoint(
 			switch epn {
 			case "get":
 				endpoint = c.Get()
-				data = nil
+				data, err = casesc.BuildGetPayload(*casesGetBodyFlag)
 			case "add":
 				endpoint = c.Add()
 				data, err = casesc.BuildAddPayload(*casesAddBodyFlag)
@@ -150,12 +153,15 @@ Additional help:
 `, os.Args[0], os.Args[0])
 }
 func casesGetUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] cases get
+	fmt.Fprintf(os.Stderr, `%s [flags] cases get -body JSON
 
 Get implements get.
+    -body JSON: 
 
 Example:
-    `+os.Args[0]+` cases get
+    `+os.Args[0]+` cases get --body '{
+      "token": "Est esse id."
+   }'
 `, os.Args[0])
 }
 
@@ -167,14 +173,15 @@ Add implements add.
 
 Example:
     `+os.Args[0]+` cases add --body '{
-      "collected": 0.8091384557987812,
-      "currency": "Autem qui aperiam aut.",
-      "desc": "Expedita accusamus totam tempore.",
+      "collected": 0.8003833617014785,
+      "currency": "Sunt libero ullam nam voluptatem quis.",
+      "desc": "Qui officia non ipsa accusantium facilis consectetur.",
       "tags": [
-         "Cupiditate qui quo veritatis est.",
-         "Accusantium sed voluptas ut qui."
+         "Quisquam vel deserunt.",
+         "Enim esse voluptas.",
+         "Ut quia ratione ipsa repellat."
       ],
-      "target": 0.5160925211499976
+      "target": 0.34487022127545675
    }'
 `, os.Args[0])
 }

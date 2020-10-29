@@ -1,4 +1,4 @@
-package models
+package main
 
 import (
 	"errors"
@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/elmawardy/tahor/auth/config"
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 
@@ -27,7 +26,7 @@ type UserBasicInfo struct {
 }
 
 func (u *User) InjectIdByJwt(jwt string) error {
-	realJWT, err := config.Cachestore.HGet("user:"+u.Email, "jwt").Result()
+	realJWT, err := Cachestore.HGet("user:"+u.Email, "jwt").Result()
 	if err == redis.Nil {
 		return errors.New("jwt not found")
 	} else if err != nil {
@@ -35,7 +34,7 @@ func (u *User) InjectIdByJwt(jwt string) error {
 	}
 
 	if realJWT == jwt {
-		id, err := config.Cachestore.HGet("user:"+u.Email, "id").Result()
+		id, err := Cachestore.HGet("user:"+u.Email, "id").Result()
 		intID, _ := strconv.Atoi(id)
 		u.ID = uint(intID)
 
@@ -54,7 +53,7 @@ func (u *User) GetBasicInfo(jwt string) (info UserBasicInfo, err error) {
 		return
 	}
 	email := fmt.Sprintf("%v", claims["email"])
-	config.DB.Where("email = ?", email).Find(&u)
+	DB.Where("email = ?", email).Find(&u)
 	info.Email = u.Email
 	info.Name = u.Name
 
@@ -69,7 +68,7 @@ func (u *User) Logout(tokenString string) error {
 		return errors.New("No Claims found in the token")
 	}
 	email := fmt.Sprintf("%v", claims["email"])
-	err = config.Cachestore.Del("user:" + email).Err()
+	err = Cachestore.Del("user:" + email).Err()
 
 	return err
 }
@@ -77,7 +76,7 @@ func (u *User) Logout(tokenString string) error {
 func (u *User) ValidatePassword(email string, password string) error {
 
 	plainTextPasswd := password
-	config.DB.Where("email = ?", email).Find(&u)
+	DB.Where("email = ?", email).Find(&u)
 
 	if CheckPasswordHash(plainTextPasswd, u.Password) {
 		return nil
@@ -88,7 +87,7 @@ func (u *User) ValidatePassword(email string, password string) error {
 }
 
 func (u *User) JwtFromCache(email string) (tokenString string, err error) {
-	tokenString, err = config.Cachestore.HGet("user:"+email, "jwt").Result()
+	tokenString, err = Cachestore.HGet("user:"+email, "jwt").Result()
 	return
 }
 
@@ -96,7 +95,7 @@ func (u *User) JwtSetInCache(email string, jwt string) error {
 	userData := map[string]interface{}{
 		"jwt": jwt,
 	}
-	err := config.Cachestore.HMSet("user:"+email, userData).Err()
+	err := Cachestore.HMSet("user:"+email, userData).Err()
 	return err
 }
 
@@ -114,7 +113,7 @@ func (u *User) GenerateJWTFromEmail(email string) (tokenString string, err error
 
 func (u *User) Register() error {
 	u.Password, _ = HashPassword(u.Password)
-	errs := config.DB.Create(u).GetErrors()
+	errs := DB.Create(u).GetErrors()
 
 	if len(errs) != 0 {
 		for _, err := range errs {

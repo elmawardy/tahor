@@ -25,6 +25,7 @@ github.com/dimfeld/httptreemux/v5 v5.2.2 h1:8JAUcuNrLbL5uwmvQ4lZVCjuQ/Ioojc+7VGt
 github.com/dimfeld/httptreemux/v5 v5.2.2/go.mod h1:QeEylH57C0v3VO0tkKraVz9oD3Uu93CKPnTLbsidvSw=
 github.com/elmawardy/tahor v0.0.0-20200814154504-b986009cb8ad h1:LAYT5ihaR6LCHhDBebqvCtPFYBkU8/2Wbg21hU9H4tg=
 github.com/elmawardy/tahor v0.0.0-20200814154504-b986009cb8ad/go.mod h1:/hyQTgTjiQ0ClIQq4jbUP8l90q90iVKilDgHwAo8wX4=
+github.com/elmawardy/tahor v0.0.0-20201012210359-2bc9b31e69d2 h1:0+KgMJyf46uyq5+0C1n1BxF0oXRucVTNy8TWqM3u11E=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=

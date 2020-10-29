@@ -35,6 +35,10 @@ paths:
           description: OK response.
           schema:
             $ref: '#/definitions/CasesAddResponseBody'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CasesAddUnauthorizedResponseBody'
       schemes:
       - http
   /api/cases/get:
@@ -43,6 +47,14 @@ paths:
       - cases
       summary: get cases
       operationId: cases#get
+      parameters:
+      - name: GetRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CasesGetRequestBody'
+          required:
+          - token
       responses:
         "200":
           description: OK response.
@@ -50,6 +62,14 @@ paths:
             type: array
             items:
               $ref: '#/definitions/GetResponseResponse'
+        "401":
+          description: Unauthorized response.
+          schema:
+            $ref: '#/definitions/CasesGetUnauthorizedResponseBody'
+        "403":
+          description: Forbidden response.
+          schema:
+            $ref: '#/definitions/CasesGetInvalidScopesResponseBody'
       schemes:
       - http
 definitions:
@@ -60,38 +80,40 @@ definitions:
       collected:
         type: number
         description: Collected Quantity
-        example: 0.8098744009695131
+        example: 0.49711351694702943
         format: double
       currency:
         type: string
         description: Currency
-        example: Similique ut qui placeat dolores.
+        example: Esse debitis ut incidunt error quam provident.
       desc:
         type: string
         description: Case Description
-        example: Itaque non ipsum facilis sunt quam.
+        example: Porro et deserunt.
       tags:
         type: array
         items:
           type: string
-          example: Voluptatum molestiae cum et eligendi.
+          example: Odio ratione.
         description: Tags array
         example:
-        - Id quas.
-        - Facere et vel et enim.
+        - Ipsa aut incidunt.
+        - Vel ducimus accusamus porro.
+        - Aut ducimus quasi non ad.
       target:
         type: number
         description: Target Quantity
-        example: 0.31413696727320983
+        example: 0.35476548967530164
         format: double
     example:
-      collected: 0.47071985632076707
-      currency: Aperiam qui provident qui.
-      desc: Voluptas a.
+      collected: 0.38202232630928523
+      currency: Temporibus accusamus.
+      desc: Odit et accusamus.
       tags:
-      - Repellat porro voluptatibus odio ipsa officiis.
-      - Adipisci et labore cupiditate soluta modi.
-      target: 0.17198727809463923
+      - Ut veniam quas deserunt.
+      - Ut deleniti.
+      - Voluptate et assumenda ut quo est explicabo.
+      target: 0.7461176962398828
     required:
     - desc
     - target
@@ -104,9 +126,36 @@ definitions:
       desc:
         type: string
         description: The description of the case
-        example: Provident blanditiis eum qui laudantium eum.
+        example: Fugit adipisci et.
     example:
-      desc: Vitae voluptate.
+      desc: Cupiditate soluta modi nihil.
+  CasesAddUnauthorizedResponseBody:
+    title: CasesAddUnauthorizedResponseBody
+    type: string
+    description: Credentials are invalid
+    example: Quis aut.
+  CasesGetInvalidScopesResponseBody:
+    title: CasesGetInvalidScopesResponseBody
+    type: string
+    description: Token scopes are invalid
+    example: Facere et vel et enim.
+  CasesGetRequestBody:
+    title: CasesGetRequestBody
+    type: object
+    properties:
+      token:
+        type: string
+        description: JWT used for authentication
+        example: Perspiciatis ad aperiam qui provident.
+    example:
+      token: Officia laudantium repellat porro voluptatibus odio ipsa.
+    required:
+    - token
+  CasesGetUnauthorizedResponseBody:
+    title: CasesGetUnauthorizedResponseBody
+    type: string
+    description: Credentials are invalid
+    example: Voluptas a.
   GetResponseResponse:
     title: GetResponseResponse
     type: object
@@ -114,48 +163,46 @@ definitions:
       Collected:
         type: number
         description: Collected value
-        example: 0.2501494114408457
+        example: 0.17048738161674107
         format: double
       Currency:
         type: string
         description: Currency
-        example: Nam voluptatem quis rerum sit quisquam vel.
+        example: Maxime dolores optio ut.
       DateModified:
         type: string
         description: Date Modified in the database
-        example: Voluptas saepe ut.
+        example: Numquam ea architecto laborum aut omnis.
       Description:
         type: string
         description: Case Description
-        example: Quia enim.
+        example: Nostrum qui similique neque debitis dolor.
       ID:
         type: integer
         description: Case ID
-        example: 10856614028323777450
+        example: 7489333034111920853
         format: int64
       Tags:
         type: array
         items:
           type: string
-          example: Ratione ipsa repellat officia.
+          example: Saepe nobis aut qui consequatur.
         description: Tags
         example:
-        - Expedita autem at.
-        - Iste quasi quis earum.
-        - Enim voluptates in rerum.
-        - Maxime dolores optio ut.
+        - Labore quia perspiciatis omnis.
+        - Illo id.
       Target:
         type: number
         description: Targetted value
-        example: 0.2706150952299439
+        example: 0.7207897685346668
         format: double
     example:
-      Collected: 0.5421761432364833
-      Currency: Neque debitis.
-      DateModified: Saepe nobis aut qui consequatur.
-      Description: Non numquam ea architecto laborum aut omnis.
-      ID: 16025356420810469767
+      Collected: 0.540506236496741
+      Currency: Qui laudantium eum eaque.
+      DateModified: Perferendis sapiente et similique.
+      Description: Voluptate ut itaque non ipsum facilis sunt.
+      ID: 9579606506905698090
       Tags:
-      - Labore quia perspiciatis omnis.
-      - Illo id.
-      Target: 0.015134247437328498
+      - Placeat dolores saepe voluptatum molestiae cum.
+      - Eligendi reprehenderit culpa id quas.
+      Target: 0.13127594859952696

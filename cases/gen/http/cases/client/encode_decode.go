@@ -33,9 +33,29 @@ func (c *Client) BuildGetRequest(ctx context.Context, v interface{}) (*http.Requ
 	return req, nil
 }
 
+// EncodeGetRequest returns an encoder for requests sent to the cases get
+// server.
+func EncodeGetRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*cases.GetPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("cases", "get", "*cases.GetPayload", v)
+		}
+		body := NewGetRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("cases", "get", err)
+		}
+		return nil
+	}
+}
+
 // DecodeGetResponse returns a decoder for responses returned by the cases get
 // endpoint. restoreBody controls whether the response body should be restored
 // after having been read.
+// DecodeGetResponse may return the following errors:
+//	- "invalid-scopes" (type cases.InvalidScopes): http.StatusForbidden
+//	- "unauthorized" (type cases.Unauthorized): http.StatusUnauthorized
+//	- error: internal error
 func DecodeGetResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -62,6 +82,26 @@ func DecodeGetResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody
 			}
 			res := NewGetResponse2OK(body)
 			return res, nil
+		case http.StatusForbidden:
+			var (
+				body GetInvalidScopesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("cases", "get", err)
+			}
+			return nil, NewGetInvalidScopes(body)
+		case http.StatusUnauthorized:
+			var (
+				body GetUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("cases", "get", err)
+			}
+			return nil, NewGetUnauthorized(body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("cases", "get", resp.StatusCode, string(body))
@@ -103,6 +143,9 @@ func EncodeAddRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Re
 // DecodeAddResponse returns a decoder for responses returned by the cases add
 // endpoint. restoreBody controls whether the response body should be restored
 // after having been read.
+// DecodeAddResponse may return the following errors:
+//	- "unauthorized" (type cases.Unauthorized): http.StatusUnauthorized
+//	- error: internal error
 func DecodeAddResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -129,6 +172,16 @@ func DecodeAddResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody
 			}
 			res := NewAddResponseOK(&body)
 			return res, nil
+		case http.StatusUnauthorized:
+			var (
+				body AddUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("cases", "add", err)
+			}
+			return nil, NewAddUnauthorized(body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("cases", "add", resp.StatusCode, string(body))

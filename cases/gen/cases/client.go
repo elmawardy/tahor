@@ -28,9 +28,12 @@ func NewClient(get, add goa.Endpoint) *Client {
 }
 
 // Get calls the "get" endpoint of the "cases" service.
-func (c *Client) Get(ctx context.Context) (res []*GetResponse, err error) {
+// Get may return the following errors:
+//	- "invalid-scopes" (type InvalidScopes)
+//	- error: internal error
+func (c *Client) Get(ctx context.Context, p *GetPayload) (res []*GetResponse, err error) {
 	var ires interface{}
-	ires, err = c.GetEndpoint(ctx, nil)
+	ires, err = c.GetEndpoint(ctx, p)
 	if err != nil {
 		return
 	}

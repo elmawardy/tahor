@@ -12,6 +12,13 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// GetRequestBody is the type of the "cases" service "get" endpoint HTTP
+// request body.
+type GetRequestBody struct {
+	// JWT used for authentication
+	Token *string `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
+}
+
 // AddRequestBody is the type of the "cases" service "add" endpoint HTTP
 // request body.
 type AddRequestBody struct {
@@ -37,6 +44,18 @@ type AddResponseBody struct {
 	// The description of the case
 	Desc *string `form:"desc,omitempty" json:"desc,omitempty" xml:"desc,omitempty"`
 }
+
+// GetInvalidScopesResponseBody is the type of the "cases" service "get"
+// endpoint HTTP response body for the "invalid-scopes" error.
+type GetInvalidScopesResponseBody string
+
+// GetUnauthorizedResponseBody is the type of the "cases" service "get"
+// endpoint HTTP response body for the "unauthorized" error.
+type GetUnauthorizedResponseBody string
+
+// AddUnauthorizedResponseBody is the type of the "cases" service "add"
+// endpoint HTTP response body for the "unauthorized" error.
+type AddUnauthorizedResponseBody string
 
 // GetResponseResponse is used to define fields on response body types.
 type GetResponseResponse struct {
@@ -75,6 +94,36 @@ func NewAddResponseBody(res *cases.AddResponse) *AddResponseBody {
 	return body
 }
 
+// NewGetInvalidScopesResponseBody builds the HTTP response body from the
+// result of the "get" endpoint of the "cases" service.
+func NewGetInvalidScopesResponseBody(res cases.InvalidScopes) GetInvalidScopesResponseBody {
+	body := GetInvalidScopesResponseBody(res)
+	return body
+}
+
+// NewGetUnauthorizedResponseBody builds the HTTP response body from the result
+// of the "get" endpoint of the "cases" service.
+func NewGetUnauthorizedResponseBody(res cases.Unauthorized) GetUnauthorizedResponseBody {
+	body := GetUnauthorizedResponseBody(res)
+	return body
+}
+
+// NewAddUnauthorizedResponseBody builds the HTTP response body from the result
+// of the "add" endpoint of the "cases" service.
+func NewAddUnauthorizedResponseBody(res cases.Unauthorized) AddUnauthorizedResponseBody {
+	body := AddUnauthorizedResponseBody(res)
+	return body
+}
+
+// NewGetPayload builds a cases service get endpoint payload.
+func NewGetPayload(body *GetRequestBody) *cases.GetPayload {
+	v := &cases.GetPayload{
+		Token: *body.Token,
+	}
+
+	return v
+}
+
 // NewAddPayload builds a cases service add endpoint payload.
 func NewAddPayload(body *AddRequestBody) *cases.AddPayload {
 	v := &cases.AddPayload{
@@ -91,6 +140,14 @@ func NewAddPayload(body *AddRequestBody) *cases.AddPayload {
 	}
 
 	return v
+}
+
+// ValidateGetRequestBody runs the validations defined on GetRequestBody
+func ValidateGetRequestBody(body *GetRequestBody) (err error) {
+	if body.Token == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	return
 }
 
 // ValidateAddRequestBody runs the validations defined on AddRequestBody

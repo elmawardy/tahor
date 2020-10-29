@@ -11,6 +11,13 @@ import (
 	cases "github.com/elmawardy/tahor/cases/gen/cases"
 )
 
+// GetRequestBody is the type of the "cases" service "get" endpoint HTTP
+// request body.
+type GetRequestBody struct {
+	// JWT used for authentication
+	Token string `form:"token" json:"token" xml:"token"`
+}
+
 // AddRequestBody is the type of the "cases" service "add" endpoint HTTP
 // request body.
 type AddRequestBody struct {
@@ -37,6 +44,18 @@ type AddResponseBody struct {
 	Desc *string `form:"desc,omitempty" json:"desc,omitempty" xml:"desc,omitempty"`
 }
 
+// GetInvalidScopesResponseBody is the type of the "cases" service "get"
+// endpoint HTTP response body for the "invalid-scopes" error.
+type GetInvalidScopesResponseBody string
+
+// GetUnauthorizedResponseBody is the type of the "cases" service "get"
+// endpoint HTTP response body for the "unauthorized" error.
+type GetUnauthorizedResponseBody string
+
+// AddUnauthorizedResponseBody is the type of the "cases" service "add"
+// endpoint HTTP response body for the "unauthorized" error.
+type AddUnauthorizedResponseBody string
+
 // GetResponseResponse is used to define fields on response body types.
 type GetResponseResponse struct {
 	// Case ID
@@ -53,6 +72,15 @@ type GetResponseResponse struct {
 	DateModified *string `form:"DateModified,omitempty" json:"DateModified,omitempty" xml:"DateModified,omitempty"`
 	// Tags
 	Tags []string `form:"Tags,omitempty" json:"Tags,omitempty" xml:"Tags,omitempty"`
+}
+
+// NewGetRequestBody builds the HTTP request body from the payload of the "get"
+// endpoint of the "cases" service.
+func NewGetRequestBody(p *cases.GetPayload) *GetRequestBody {
+	body := &GetRequestBody{
+		Token: p.Token,
+	}
+	return body
 }
 
 // NewAddRequestBody builds the HTTP request body from the payload of the "add"
@@ -83,6 +111,18 @@ func NewGetResponse2OK(body []*GetResponseResponse) []*cases.GetResponse {
 	return v
 }
 
+// NewGetInvalidScopes builds a cases service get endpoint invalid-scopes error.
+func NewGetInvalidScopes(body GetInvalidScopesResponseBody) cases.InvalidScopes {
+	v := cases.InvalidScopes(body)
+	return v
+}
+
+// NewGetUnauthorized builds a cases service get endpoint unauthorized error.
+func NewGetUnauthorized(body GetUnauthorizedResponseBody) cases.Unauthorized {
+	v := cases.Unauthorized(body)
+	return v
+}
+
 // NewAddResponseOK builds a "cases" service "add" endpoint result from a HTTP
 // "OK" response.
 func NewAddResponseOK(body *AddResponseBody) *cases.AddResponse {
@@ -90,5 +130,11 @@ func NewAddResponseOK(body *AddResponseBody) *cases.AddResponse {
 		Desc: body.Desc,
 	}
 
+	return v
+}
+
+// NewAddUnauthorized builds a cases service add endpoint unauthorized error.
+func NewAddUnauthorized(body AddUnauthorizedResponseBody) cases.Unauthorized {
+	v := cases.Unauthorized(body)
 	return v
 }

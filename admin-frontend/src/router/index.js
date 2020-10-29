@@ -6,6 +6,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Cases from '../views/Cases.vue'
 import Users from '../views/Users.vue'
 import UserAdd from '../views/UserAdd.vue'
+import CaseAdd from '../views/CaseAdd.vue'
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,7 @@ const routes = [
       { path: 'users', component: Users },
       { path: 'cases', component: Cases },
       { path: 'users/add', component: UserAdd },
+      { path: 'cases/add', component: CaseAdd },
     ]
   },
   {
